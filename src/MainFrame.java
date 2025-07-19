@@ -3,12 +3,20 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.plaf.FontUIResource;
 import javax.swing.JComboBox;
 import javax.swing.JButton;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
+import java.awt.Component;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.Insets;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 
 public class MainFrame extends JFrame {
 
@@ -43,12 +51,24 @@ public class MainFrame extends JFrame {
         add(panel);
         panel.setLayout(null);
         
+        homePage(user);
+
+        setVisible(true);
+    }
+
+    private void homePage(User user) {
+        JPanel panel = new JPanel();
+        panel.setLayout(null);
+
         JLabel label = new JLabel("Bienvenue sur l'application de gestion de facturation " + user.getUsername() + " !");
         label.setBounds(10, 20, 400, 25);
         label.setAlignmentX(CENTER_ALIGNMENT);
         panel.add(label);
 
-        setVisible(true);
+        getContentPane().removeAll();
+        getContentPane().add(panel, BorderLayout.CENTER);
+        revalidate();
+        repaint();
     }
 
     private void displayPrestationsList(JPanel panel) {
@@ -68,7 +88,7 @@ public class MainFrame extends JFrame {
         // Titre centré en haut
         JLabel title = new JLabel("Création d'une nouvelle prestation");
         title.setFont(new FontUIResource("Arial", FontUIResource.BOLD, 18));
-        title.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
+        title.setAlignmentX(Component.CENTER_ALIGNMENT);
         formPanel.add(title);
         
         // Espacement après le titre
@@ -77,11 +97,11 @@ public class MainFrame extends JFrame {
         // Panel pour les champs communs avec layout en grille
         JPanel commonFieldsPanel = new JPanel();
         commonFieldsPanel.setLayout(new java.awt.GridBagLayout());
-        commonFieldsPanel.setPreferredSize(new java.awt.Dimension(400, 120));
-        commonFieldsPanel.setMaximumSize(new java.awt.Dimension(400, 120));
-        java.awt.GridBagConstraints gbc = new java.awt.GridBagConstraints();
-        gbc.insets = new java.awt.Insets(5, 5, 5, 5);
-        gbc.anchor = java.awt.GridBagConstraints.WEST;
+        commonFieldsPanel.setPreferredSize(new Dimension(400, 120));
+        commonFieldsPanel.setMaximumSize(new Dimension(400, 120));
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.anchor = GridBagConstraints.WEST;
         
         // Champs communs
         JTextField dateField = new JTextField(20);
@@ -110,13 +130,13 @@ public class MainFrame extends JFrame {
         formPanel.add(commonFieldsPanel);
         
         // Espacement avant les champs spécifiques
-        formPanel.add(javax.swing.Box.createVerticalStrut(20));
+        formPanel.add(Box.createVerticalStrut(20));
         
         // Panel pour les champs spécifiques (dynamique)
         JPanel specificPanel = new JPanel();
-        specificPanel.setLayout(new java.awt.GridBagLayout());
-        specificPanel.setPreferredSize(new java.awt.Dimension(400, 80));
-        specificPanel.setMaximumSize(new java.awt.Dimension(400, 80));
+        specificPanel.setLayout(new GridBagLayout());
+        specificPanel.setPreferredSize(new Dimension(400, 80));
+        specificPanel.setMaximumSize(new Dimension(400, 80));
         formPanel.add(specificPanel);
 
         // Champs spécifiques pour Consultation
@@ -132,9 +152,9 @@ public class MainFrame extends JFrame {
         // Méthode pour mettre à jour les champs spécifiques
         Runnable updateSpecificFields = () -> {
             specificPanel.removeAll();
-            java.awt.GridBagConstraints gbcSpecific = new java.awt.GridBagConstraints();
-            gbcSpecific.insets = new java.awt.Insets(5, 5, 5, 5);
-            gbcSpecific.anchor = java.awt.GridBagConstraints.WEST;
+            GridBagConstraints gbcSpecific = new GridBagConstraints();
+            gbcSpecific.insets = new Insets(5, 5, 5, 5);
+            gbcSpecific.anchor = GridBagConstraints.WEST;
            
             // Rend les champs spécifiques en fonction du type de prestation
             if (typeCombo.getSelectedItem().equals("Consultation")) {
@@ -151,8 +171,8 @@ public class MainFrame extends JFrame {
                 specificPanel.add(rateField, gbcSpecific);
                 
                 // Ajuster la hauteur pour Consultation (2 champs)
-                specificPanel.setPreferredSize(new java.awt.Dimension(400, 80));
-                specificPanel.setMaximumSize(new java.awt.Dimension(400, 80));
+                specificPanel.setPreferredSize(new Dimension(400, 80));
+                specificPanel.setMaximumSize(new Dimension(400, 80));
             } else {
                 // Heure de début
                 gbcSpecific.gridx = 0; gbcSpecific.gridy = 0;
@@ -179,8 +199,8 @@ public class MainFrame extends JFrame {
                 specificPanel.add(classLevelField, gbcSpecific);
                 
                 // Ajuster la hauteur pour Cours (4 champs)
-                specificPanel.setPreferredSize(new java.awt.Dimension(400, 140));
-                specificPanel.setMaximumSize(new java.awt.Dimension(400, 140));
+                specificPanel.setPreferredSize(new Dimension(400, 140));
+                specificPanel.setMaximumSize(new Dimension(400, 140));
             }
             specificPanel.revalidate();
             specificPanel.repaint();
@@ -193,24 +213,24 @@ public class MainFrame extends JFrame {
         updateSpecificFields.run();
 
         // Espacement avant le bouton
-        formPanel.add(javax.swing.Box.createVerticalStrut(20));
+        formPanel.add(Box.createVerticalStrut(20));
         
         // Bouton de validation centré
         JButton submitButton = new JButton("Valider");
-        submitButton.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
+        submitButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         formPanel.add(submitButton);
 
         // Espacement après le bouton
-        formPanel.add(javax.swing.Box.createVerticalStrut(10));
+        formPanel.add(Box.createVerticalStrut(10));
 
         // Panel conteneur pour centrer le formulaire
         JPanel centerPanel = new JPanel();
-        centerPanel.setLayout(new java.awt.BorderLayout());
-        centerPanel.add(formPanel, java.awt.BorderLayout.CENTER);
+        centerPanel.setLayout(new BorderLayout());
+        centerPanel.add(formPanel, BorderLayout.CENTER);
 
         // Affichage du formulaire dans la fenêtre principale
         getContentPane().removeAll();
-        getContentPane().add(centerPanel, java.awt.BorderLayout.CENTER);
+        getContentPane().add(centerPanel, BorderLayout.CENTER);
         revalidate();
         repaint();
 
@@ -233,8 +253,13 @@ public class MainFrame extends JFrame {
 
                     ConsultationDAO consultationDAO = new ConsultationDAO();
                     consultationDAO.save(consultation);
+
+                    // affiche un message de succès
+                    JOptionPane.showMessageDialog(formPanel, "Consultation enregistrée avec succès");
+                    homePage(user);
                 } catch (Exception ex) {
                     ex.printStackTrace();
+                    JOptionPane.showMessageDialog(formPanel, "Erreur lors de l'enregistrement de la consultation");
                 }
             } else {
                 String startHour = startHourField.getText();
@@ -245,10 +270,17 @@ public class MainFrame extends JFrame {
                 // Crée et enregistre un Cours
                 try {
                     Course course = new Course(date, client, type, startHour, endHour, module, classLevel, userId);
+                    course.setUserId(userId);
+
                     CourseDAO courseDAO = new CourseDAO();
                     courseDAO.save(course);
+
+                    // affiche un message de succès
+                    JOptionPane.showMessageDialog(formPanel, "Cours enregistré avec succès");
+                    homePage(user);
                 } catch (Exception ex) {
                     ex.printStackTrace();
+                    JOptionPane.showMessageDialog(formPanel, "Erreur lors de l'enregistrement du cours");
                 }
             }
         });

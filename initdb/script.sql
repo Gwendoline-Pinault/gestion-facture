@@ -1,5 +1,5 @@
 -- Create the database
-CREATE DATABASE IF NOT EXISTS invoices;
+CREATE DATABASE IF NOT EXISTS invoices CHARACTER SET utf8mb4 COLLATE utf8mb4_bin;
 
 CREATE USER IF NOT EXISTS 'monthe'@'localhost' IDENTIFIED BY 'java';
 GRANT ALL PRIVILEGES ON invoices.* TO 'monthe'@'localhost';
@@ -29,9 +29,7 @@ CREATE TABLE consultations (
     type varchar(255) NOT NULL,
     description varchar(255) NOT NULL,
     rate int NOT NULL,
-    prestation_id int NOT NULL,
     user_id int NOT NULL,
-    FOREIGN KEY (prestation_id) REFERENCES prestations(id),
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
@@ -46,9 +44,7 @@ CREATE TABLE courses (
     end_hour varchar(255) NOT NULL,
     module varchar(255) NOT NULL,
     class_level varchar(255) NOT NULL,
-    prestation_id int NOT NULL,
     user_id int NOT NULL,
-    FOREIGN KEY (prestation_id) REFERENCES prestations(id),
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
