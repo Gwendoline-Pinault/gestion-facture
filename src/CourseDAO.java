@@ -25,12 +25,13 @@ public class CourseDAO {
         }
     }
 
-    public List<Course> findAll() {
-        String sql = "SELECT * FROM courses";
+    public List<Course> findAll(int userId) {
+        String sql = "SELECT * FROM courses WHERE user_id = ?";
         List<Course> courses = new ArrayList<>();
         try {
             Connection conn = DBConnect.getConnection();
             PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, userId);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
                 Course course = new Course();

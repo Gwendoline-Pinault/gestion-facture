@@ -5,7 +5,9 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.FontUIResource;
 import javax.swing.JComboBox;
 import javax.swing.JButton;
@@ -15,14 +17,17 @@ import java.awt.Component;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Insets;
+import java.util.List;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 
 public class MainFrame extends JFrame {
 
     public MainFrame(User user) {
         setTitle("Application de gestion de factures");
-        setSize(700, 500);
+        setSize(1200, 700);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
@@ -31,21 +36,20 @@ public class MainFrame extends JFrame {
         // Menu bar
         JMenuBar menuBar = new JMenuBar();
 
+        // Menu prestations
         JMenu prestationsMenu = new JMenu("Prestations");
-        JMenuItem prestationsListItem = new JMenuItem("Liste des prestations");
+        JMenuItem coursesListItem = new JMenuItem("Liste des cours");
+        JMenuItem consultationsListItem = new JMenuItem("Liste des consultations");
         JMenuItem addPrestationItem = new JMenuItem("Ajouter une prestation");
-        prestationsMenu.add(prestationsListItem);
         prestationsMenu.add(addPrestationItem);
+        prestationsMenu.add(consultationsListItem);
+        prestationsMenu.add(coursesListItem);
         
-        prestationsListItem.addActionListener((e) -> displayPrestationsList(panel));
+        coursesListItem.addActionListener((e) -> displayCoursesList(user));
+        consultationsListItem.addActionListener((e) -> displayConsultationsList(user));
         addPrestationItem.addActionListener((e) -> createPrestation(user));
         
-        JMenuItem bilanMenu = new JMenu("Bilan");
-        JMenuItem bilanItem = new JMenuItem("Consulter le bilan");
-        bilanMenu.add(bilanItem);
-        
         menuBar.add(prestationsMenu);
-        menuBar.add(bilanMenu);
         setJMenuBar(menuBar);
         
         add(panel);
@@ -58,11 +62,13 @@ public class MainFrame extends JFrame {
 
     private void homePage(User user) {
         JPanel panel = new JPanel();
-        panel.setLayout(null);
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
         JLabel label = new JLabel("Bienvenue sur l'application de gestion de facturation " + user.getUsername() + " !");
-        label.setBounds(10, 20, 400, 25);
+        label.setFont(new FontUIResource("Arial", FontUIResource.BOLD, 18));
         label.setAlignmentX(CENTER_ALIGNMENT);
+
+        panel.add(Box.createVerticalStrut(20));
         panel.add(label);
 
         getContentPane().removeAll();
@@ -71,8 +77,74 @@ public class MainFrame extends JFrame {
         repaint();
     }
 
-    private void displayPrestationsList(JPanel panel) {
-        System.out.println("Liste des prestations");
+    private void displayConsultationsList(User user) {
+        // Récupération des données
+        List<Consultation> consultations = new ConsultationDAO().findAll(user.getId());
+        
+        // Tableau pour consultations
+        String[] consultationColumns = {"ID","Date", "Client", "Type", "Description", "Tarif"};
+        DefaultTableModel consultationModel = new DefaultTableModel(consultationColumns, 0);
+        for (Consultation c : consultations) {
+            consultationModel.addRow(new Object[]{
+                c.getId(), c.getDate(), c.getClient(), c.getType(), c.getDescription(), c.getRate()
+            });
+        }
+        JTable consultationTable = new JTable(consultationModel);
+    
+        // Panel principal
+        JPanel listPanel = new JPanel();
+        listPanel.setLayout(new BoxLayout(listPanel, BoxLayout.Y_AXIS));
+        listPanel.setBorder(new EmptyBorder(20, 10, 10, 10));
+        
+        JLabel title = new JLabel("Liste des consultations");
+        title.setFont(new FontUIResource("Arial", FontUIResource.BOLD, 18));
+        title.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        listPanel.add(title);
+        listPanel.add(Box.createVerticalStrut(20));
+        listPanel.add(new JScrollPane(consultationTable));
+        listPanel.add(Box.createVerticalStrut(20));
+    
+        // Affichage dans la fenêtre principale
+        getContentPane().removeAll();
+        getContentPane().add(listPanel, BorderLayout.CENTER);
+        revalidate();
+        repaint();
+    }
+
+    private void displayCoursesList(User user) {
+        // Récupération des données
+        List<Course> courses = new CourseDAO().findAll(user.getId());
+
+        // Tableau pour cours
+        String[] courseColumns = {"ID", "Date", "Client", "Type", "Heure début", "Heure fin", "Module", "Niveau"};
+        DefaultTableModel courseModel = new DefaultTableModel(courseColumns, 0);
+        for (Course c : courses) {
+            courseModel.addRow(new Object[]{
+                c.getId(), c.getDate(), c.getClient(), c.getType(), c.getStartHour(), c.getEndHour(), c.getModule(), c.getClassLevel()
+            });
+        }
+        JTable courseTable = new JTable(courseModel);
+
+        // Panel principal
+        JPanel listPanel = new JPanel();
+        listPanel.setLayout(new BoxLayout(listPanel, BoxLayout.Y_AXIS));
+        listPanel.setBorder(new EmptyBorder(20, 10, 10, 10));
+
+        JLabel title = new JLabel("Liste des cours");
+        title.setFont(new FontUIResource("Arial", FontUIResource.BOLD, 18));
+        title.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        listPanel.add(title);
+        listPanel.add(javax.swing.Box.createVerticalStrut(20));
+        listPanel.add(new JScrollPane(courseTable));
+        listPanel.add(Box.createVerticalStrut(20));
+
+        // Affichage dans la fenêtre principale
+        getContentPane().removeAll();
+        getContentPane().add(listPanel, BorderLayout.CENTER);
+        revalidate();
+        repaint();
     }
 
     public void createPrestation(User user) {
@@ -285,4 +357,5 @@ public class MainFrame extends JFrame {
             }
         });
     }
+
 }

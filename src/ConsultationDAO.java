@@ -26,12 +26,13 @@ public class ConsultationDAO {
         }
     }
 
-    public List<Consultation> findAll() {
-        String sql = "SELECT * FROM consultations";
+    public List<Consultation> findAll(int userId) {
+        String sql = "SELECT * FROM consultations WHERE user_id = ?";
         List<Consultation> consultations = new ArrayList<>();
         try {
             Connection conn = DBConnect.getConnection();
             PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, userId);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
                 Consultation consultation = new Consultation();
