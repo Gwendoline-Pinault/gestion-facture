@@ -11,6 +11,7 @@ import javax.swing.JButton;
 import javax.swing.BoxLayout;
 
 public class MainFrame extends JFrame {
+
     public MainFrame(User user) {
         setTitle("Application de gestion de factures");
         setSize(700, 500);
@@ -29,7 +30,7 @@ public class MainFrame extends JFrame {
         prestationsMenu.add(addPrestationItem);
         
         prestationsListItem.addActionListener((e) -> displayPrestationsList(panel));
-        addPrestationItem.addActionListener((e) -> createPrestation());
+        addPrestationItem.addActionListener((e) -> createPrestation(user));
         
         JMenuItem bilanMenu = new JMenu("Bilan");
         JMenuItem bilanItem = new JMenuItem("Consulter le bilan");
@@ -54,13 +55,15 @@ public class MainFrame extends JFrame {
         System.out.println("Liste des prestations");
     }
 
-    public void createPrestation() {
+    public void createPrestation(User user) {
+        int userId = user.getId();
+
         // Panel principal du formulaire
         JPanel formPanel = new JPanel();
         formPanel.setLayout(new BoxLayout(formPanel, BoxLayout.Y_AXIS));
 
         // espace avant le titre
-        formPanel.add(javax.swing.Box.createVerticalStrut(10));
+        formPanel.add(javax.swing.Box.createVerticalStrut(20));
 
         // Titre centré en haut
         JLabel title = new JLabel("Création d'une nouvelle prestation");
@@ -69,11 +72,13 @@ public class MainFrame extends JFrame {
         formPanel.add(title);
         
         // Espacement après le titre
-        formPanel.add(javax.swing.Box.createVerticalStrut(10));
+        formPanel.add(javax.swing.Box.createVerticalStrut(20));
         
         // Panel pour les champs communs avec layout en grille
         JPanel commonFieldsPanel = new JPanel();
         commonFieldsPanel.setLayout(new java.awt.GridBagLayout());
+        commonFieldsPanel.setPreferredSize(new java.awt.Dimension(400, 120));
+        commonFieldsPanel.setMaximumSize(new java.awt.Dimension(400, 120));
         java.awt.GridBagConstraints gbc = new java.awt.GridBagConstraints();
         gbc.insets = new java.awt.Insets(5, 5, 5, 5);
         gbc.anchor = java.awt.GridBagConstraints.WEST;
@@ -105,11 +110,13 @@ public class MainFrame extends JFrame {
         formPanel.add(commonFieldsPanel);
         
         // Espacement avant les champs spécifiques
-        formPanel.add(javax.swing.Box.createVerticalStrut(10));
+        formPanel.add(javax.swing.Box.createVerticalStrut(20));
         
         // Panel pour les champs spécifiques (dynamique)
         JPanel specificPanel = new JPanel();
         specificPanel.setLayout(new java.awt.GridBagLayout());
+        specificPanel.setPreferredSize(new java.awt.Dimension(400, 80));
+        specificPanel.setMaximumSize(new java.awt.Dimension(400, 80));
         formPanel.add(specificPanel);
 
         // Champs spécifiques pour Consultation
@@ -128,7 +135,8 @@ public class MainFrame extends JFrame {
             java.awt.GridBagConstraints gbcSpecific = new java.awt.GridBagConstraints();
             gbcSpecific.insets = new java.awt.Insets(5, 5, 5, 5);
             gbcSpecific.anchor = java.awt.GridBagConstraints.WEST;
-            
+           
+            // Rend les champs spécifiques en fonction du type de prestation
             if (typeCombo.getSelectedItem().equals("Consultation")) {
                 // Description
                 gbcSpecific.gridx = 0; gbcSpecific.gridy = 0;
@@ -141,6 +149,10 @@ public class MainFrame extends JFrame {
                 specificPanel.add(new JLabel("Tarif :"), gbcSpecific);
                 gbcSpecific.gridx = 1;
                 specificPanel.add(rateField, gbcSpecific);
+                
+                // Ajuster la hauteur pour Consultation (2 champs)
+                specificPanel.setPreferredSize(new java.awt.Dimension(400, 80));
+                specificPanel.setMaximumSize(new java.awt.Dimension(400, 80));
             } else {
                 // Heure de début
                 gbcSpecific.gridx = 0; gbcSpecific.gridy = 0;
@@ -165,6 +177,10 @@ public class MainFrame extends JFrame {
                 specificPanel.add(new JLabel("Niveau de classe :"), gbcSpecific);
                 gbcSpecific.gridx = 1;
                 specificPanel.add(classLevelField, gbcSpecific);
+                
+                // Ajuster la hauteur pour Cours (4 champs)
+                specificPanel.setPreferredSize(new java.awt.Dimension(400, 140));
+                specificPanel.setMaximumSize(new java.awt.Dimension(400, 140));
             }
             specificPanel.revalidate();
             specificPanel.repaint();
@@ -172,11 +188,12 @@ public class MainFrame extends JFrame {
 
         // Listener pour le menu déroulant
         typeCombo.addActionListener(e -> updateSpecificFields.run());
+
         // Initialisation des champs spécifiques
         updateSpecificFields.run();
 
         // Espacement avant le bouton
-        formPanel.add(javax.swing.Box.createVerticalStrut(10));
+        formPanel.add(javax.swing.Box.createVerticalStrut(20));
         
         // Bouton de validation centré
         JButton submitButton = new JButton("Valider");
@@ -186,13 +203,18 @@ public class MainFrame extends JFrame {
         // Espacement après le bouton
         formPanel.add(javax.swing.Box.createVerticalStrut(10));
 
+        // Panel conteneur pour centrer le formulaire
+        JPanel centerPanel = new JPanel();
+        centerPanel.setLayout(new java.awt.BorderLayout());
+        centerPanel.add(formPanel, java.awt.BorderLayout.CENTER);
+
         // Affichage du formulaire dans la fenêtre principale
         getContentPane().removeAll();
-        getContentPane().add(formPanel, java.awt.BorderLayout.CENTER);
+        getContentPane().add(centerPanel, java.awt.BorderLayout.CENTER);
         revalidate();
         repaint();
 
-        // Action à la validation (à compléter avec la logique d'insertion en base)
+        // Soumission du formulaire
         submitButton.addActionListener(e -> {
             String date = dateField.getText();
             String client = clientField.getText();
@@ -201,18 +223,34 @@ public class MainFrame extends JFrame {
             if (type.equals("Consultation")) {
                 String description = descriptionField.getText();
                 int rate = Integer.parseInt(rateField.getText());
-                // Créer et enregistrer une Consultation
 
-                System.out.println("Consultation créée : " + date + " " + client + " " + type + " " + description + " " + rate);
+                // Crée et enregistre une Consultation en base
+                try {
+                    Consultation consultation = new Consultation(date, client, type, description, rate, userId);
+
+                    // l'id est initialisé à 0 (je ne sais pas pourquoi), je set à nouveau avec la bonne valeur.
+                    consultation.setUserId(userId);
+
+                    ConsultationDAO consultationDAO = new ConsultationDAO();
+                    consultationDAO.save(consultation);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
             } else {
                 String startHour = startHourField.getText();
                 String endHour = endHourField.getText();
                 String module = moduleField.getText();
                 String classLevel = classLevelField.getText();
-                // Créer et enregistrer un Cours
-                System.out.println("Cours créé : " + date + " " + client + " " + type + " " + startHour + " " + endHour + " " + module + " " + classLevel);
+
+                // Crée et enregistre un Cours
+                try {
+                    Course course = new Course(date, client, type, startHour, endHour, module, classLevel, userId);
+                    CourseDAO courseDAO = new CourseDAO();
+                    courseDAO.save(course);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
             }
-            // Afficher un message de succès ou d'erreur
         });
     }
 }

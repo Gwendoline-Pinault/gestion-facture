@@ -7,7 +7,7 @@ import java.util.List;
 
 public class CourseDAO {
     public void save(Course course) {
-        String sql = "INSERT INTO courses (date, client, type, start_hour, end_hour, module, class_level, prestation_id, user_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO courses (date, client, type, start_hour, end_hour, module, class_level, user_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         try {
             Connection conn = DBConnect.getConnection();
             PreparedStatement stmt = conn.prepareStatement(sql);
@@ -18,8 +18,7 @@ public class CourseDAO {
             stmt.setString(5, course.getEndHour());
             stmt.setString(6, course.getModule());
             stmt.setString(7, course.getClassLevel());
-            stmt.setInt(8, course.getPrestationId());
-            stmt.setInt(9, course.getUserId());
+            stmt.setInt(8, course.getUserId());
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -43,7 +42,6 @@ public class CourseDAO {
                 course.setEndHour(rs.getString("end_hour"));
                 course.setModule(rs.getString("module"));
                 course.setClassLevel(rs.getString("class_level"));
-                course.setPrestationId(rs.getInt("prestation_id"));
                 course.setUserId(rs.getInt("user_id"));
                 courses.add(course);
             }
@@ -71,7 +69,6 @@ public class CourseDAO {
                 course.setEndHour(rs.getString("end_hour"));
                 course.setModule(rs.getString("module"));
                 course.setClassLevel(rs.getString("class_level"));
-                course.setPrestationId(rs.getInt("prestation_id"));
                 course.setUserId(rs.getInt("user_id"));
                 return course;
             }

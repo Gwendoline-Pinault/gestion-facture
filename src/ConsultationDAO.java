@@ -7,7 +7,8 @@ import java.util.List;
 
 public class ConsultationDAO {
     public void save(Consultation consultation) {
-        String sql = "INSERT INTO consultations (date, client, type, description, rate, prestation_id, user_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO consultations (date, client, type, description, rate, user_id) VALUES (?, ?, ?, ?, ?, ?)";
+        
         try {
             Connection conn = DBConnect.getConnection();
             PreparedStatement stmt = conn.prepareStatement(sql);
@@ -16,8 +17,9 @@ public class ConsultationDAO {
             stmt.setString(3, consultation.getType());
             stmt.setString(4, consultation.getDescription());
             stmt.setInt(5, consultation.getRate());
-            stmt.setInt(6, consultation.getPrestationId());
-            stmt.setInt(7, consultation.getUserId());
+            stmt.setInt(6, consultation.getUserId());
+
+            System.out.println(consultation.getUserId());
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -39,7 +41,6 @@ public class ConsultationDAO {
                 consultation.setType(rs.getString("type"));
                 consultation.setDescription(rs.getString("description"));
                 consultation.setRate(rs.getInt("rate"));
-                consultation.setPrestationId(rs.getInt("prestation_id"));
                 consultation.setUserId(rs.getInt("user_id"));
                 consultations.add(consultation);
             }
@@ -65,7 +66,6 @@ public class ConsultationDAO {
                 consultation.setType(rs.getString("type"));
                 consultation.setDescription(rs.getString("description"));
                 consultation.setRate(rs.getInt("rate"));
-                consultation.setPrestationId(rs.getInt("prestation_id"));
                 consultation.setUserId(rs.getInt("user_id"));
                 return consultation;
             }

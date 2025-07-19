@@ -1,19 +1,23 @@
 public class Consultation extends Prestation {
     private String description;
     private int rate;
-    private int prestationId;
     private int userId;
 
     // default constructor
     public Consultation() {}
 
     // constructor
-    public Consultation(int id, String date, String client, String type, String description, int rate, int prestationId, int userId) {
+    public Consultation(String date, String client, String type, String description, int rate, int userId) {
+        super(date, client, type, userId);
+        this.description = description;
+        this.rate = rate;
+    }
+
+    /** Constructor pour la récupération de la base */
+    public Consultation(int id, String date, String client, String type, String description, int rate, int userId) {
         super(id, date, client, type, userId);
         this.description = description;
         this.rate = rate;
-        this.prestationId = prestationId;
-        this.userId = userId;
     }
 
     public String getDescription() {
@@ -22,10 +26,6 @@ public class Consultation extends Prestation {
 
     public int getRate() {
         return rate;
-    }
-
-    public int getPrestationId() {
-        return prestationId;
     }
 
     public int getUserId() {
@@ -39,10 +39,6 @@ public class Consultation extends Prestation {
 
     public void setRate(int rate) {
         this.rate = rate;
-    }
-
-    public void setPrestationId(int prestationId) {
-        this.prestationId = prestationId;
     }
 
     public void setUserId(int userId) {

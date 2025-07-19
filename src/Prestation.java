@@ -7,6 +7,15 @@ public class Prestation {
 
     public Prestation() {}
 
+    /** Constructor pour la création en base */
+    public Prestation(String date, String client, String type, int userId) {
+        this.date = date;
+        this.client = client;
+        this.type = type;
+        this.userId = userId;
+    }
+
+    /** Constructor pour la récupération de la base */
     public Prestation(int id, String date, String client, String type, int userId) {
         this.id = id;
         this.date = date;
