@@ -13,7 +13,7 @@ import javax.swing.BoxLayout;
 public class MainFrame extends JFrame {
     public MainFrame(User user) {
         setTitle("Application de gestion de factures");
-        setSize(1000, 600);
+        setSize(700, 500);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
@@ -59,6 +59,9 @@ public class MainFrame extends JFrame {
         JPanel formPanel = new JPanel();
         formPanel.setLayout(new BoxLayout(formPanel, BoxLayout.Y_AXIS));
 
+        // espace avant le titre
+        formPanel.add(javax.swing.Box.createVerticalStrut(10));
+
         // Titre centré en haut
         JLabel title = new JLabel("Création d'une nouvelle prestation");
         title.setFont(new FontUIResource("Arial", FontUIResource.BOLD, 18));
@@ -66,7 +69,7 @@ public class MainFrame extends JFrame {
         formPanel.add(title);
         
         // Espacement après le titre
-        formPanel.add(javax.swing.Box.createVerticalStrut(20));
+        formPanel.add(javax.swing.Box.createVerticalStrut(10));
         
         // Panel pour les champs communs avec layout en grille
         JPanel commonFieldsPanel = new JPanel();
@@ -102,7 +105,7 @@ public class MainFrame extends JFrame {
         formPanel.add(commonFieldsPanel);
         
         // Espacement avant les champs spécifiques
-        formPanel.add(javax.swing.Box.createVerticalStrut(15));
+        formPanel.add(javax.swing.Box.createVerticalStrut(10));
         
         // Panel pour les champs spécifiques (dynamique)
         JPanel specificPanel = new JPanel();
@@ -173,12 +176,15 @@ public class MainFrame extends JFrame {
         updateSpecificFields.run();
 
         // Espacement avant le bouton
-        formPanel.add(javax.swing.Box.createVerticalStrut(20));
+        formPanel.add(javax.swing.Box.createVerticalStrut(10));
         
         // Bouton de validation centré
         JButton submitButton = new JButton("Valider");
         submitButton.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
         formPanel.add(submitButton);
+
+        // Espacement après le bouton
+        formPanel.add(javax.swing.Box.createVerticalStrut(10));
 
         // Affichage du formulaire dans la fenêtre principale
         getContentPane().removeAll();
