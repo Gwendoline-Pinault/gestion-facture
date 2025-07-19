@@ -62,3 +62,11 @@ CREATE TABLE invoices (
     FOREIGN KEY (consultation_id) REFERENCES consultations(id),
     FOREIGN KEY (course_id) REFERENCES courses(id)
 );
+
+INSERT INTO consultations (date, client, type, description, rate, user_id) VALUES 
+('9/07/2025', 'Arkea', 'Consultation', 'Proposition de modification du progiciel', 100, 1),
+('19/07/2025', 'Thales', 'Consultation', 'POC de proposition de logiciel de suivi de projet', 120, 1);
+
+INSERT INTO courses (date, client, type, start_hour, end_hour, module, class_level, user_id) VALUES 
+('1/07/2025', 'Brest OpenCampus', 'Cours', '10:00', '12:00', 'Java', 'Learn IT B3', 1),
+('13/07/2025', 'ENIB', 'Cours', '14:00', '16:00', 'Java', 'Promo Java 2025', 1);
